@@ -12,6 +12,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define MASTERCARD 0
+#define VISA 1
 
 // CAboutDlg dialog used for App About
 
@@ -54,6 +56,11 @@ CCreditCardGeneratorDlg::CCreditCardGeneratorDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CREDITCARDGENERATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_cardBrands = { L"MasterCard",L"Visa" };
+	 m_pathVisaFront = L".\\Pictures\\VisaFront.png";
+	 m_pathVisaBack = L".\\Pictures\\VisaBack.png";
+	 m_pathMasterCardFront = L".\\Pictures\\MasterCardFront.png";
+	 m_pathMasterCardBack = L".\\Pictures\\MasterCardBack.png";
 }
 
 void CCreditCardGeneratorDlg::DoDataExchange(CDataExchange* pDX)
@@ -65,6 +72,9 @@ BEGIN_MESSAGE_MAP(CCreditCardGeneratorDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_CBN_SELCHANGE(IDC_COMBO_BRAND, &CCreditCardGeneratorDlg::OnCbnSelchangeComboBrand)
+	ON_BN_CLICKED(IDC_BUTTON_GENERATE, &CCreditCardGeneratorDlg::OnBnClickedButtonGenerate)
+	ON_BN_CLICKED(IDC_BUTTON_ISVALID, &CCreditCardGeneratorDlg::OnBnClickedButtonIsvalid)
 END_MESSAGE_MAP()
 
 
@@ -100,6 +110,7 @@ BOOL CCreditCardGeneratorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	PopulateBrandCombo();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -153,3 +164,103 @@ HCURSOR CCreditCardGeneratorDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+bool CCreditCardGeneratorDlg::PopulateBrandCombo()
+{
+	auto pComboBrand = (CComboBox*)GetDlgItem(IDC_COMBO_BRAND);
+	if (!pComboBrand)
+	{
+		return false;
+	}
+
+	if (m_cardBrands.empty())
+	{
+		return false;
+	}
+
+	for (auto &brand : m_cardBrands)
+	{
+		pComboBrand->AddString(brand);
+	}
+
+	pComboBrand->SetCurSel(0);
+	return true;
+}
+
+void CCreditCardGeneratorDlg::OnCbnSelchangeComboBrand()
+{
+
+	auto pComboBrand = (CComboBox*)GetDlgItem(IDC_COMBO_BRAND);
+	if (!pComboBrand)
+	{
+		return;
+	}
+	int curSel = pComboBrand->GetCurSel();
+
+	switch (curSel)
+	{
+		case MASTERCARD: 
+			ChangeImageOfStaticControl(m_pathVisaFront, m_pathVisaBack);
+		case VISA:
+			ChangeImageOfStaticControl(m_pathMasterCardFront, m_pathMasterCardBack);
+		default:
+			break;
+	}
+
+}
+
+
+void CCreditCardGeneratorDlg::OnBnClickedButtonGenerate()
+{
+	// TODO: Add your control notification handler code here
+}
+
+
+void CCreditCardGeneratorDlg::OnBnClickedButtonIsvalid()
+{
+	// TODO: Add your control notification handler code here
+}
+
+bool CCreditCardGeneratorDlg::ChangeImageOfStaticControl(const CString& FrontImagePath, const CString& BackImagePath)
+{
+	// Get a pointer to the static control
+	CStatic* pCardFront = static_cast<CStatic*>(GetDlgItem(IDC_PIC_FRONT));
+	CStatic* pCardBack = static_cast<CStatic*>(GetDlgItem(IDC_PIC_BACK));
+	if (!pCardFront || !pCardBack)
+	{
+		return true;
+	}
+
+	// Load the image from the file
+	CImage imageFront;
+	CImage imageBack;
+	if (imageFront.Load(FrontImagePath) != S_OK || imageBack.Load(BackImagePath) != S_OK)
+	{
+		return false;
+	}
+
+	// Get the size of the static control
+	CRect rect;
+	pCardFront->GetClientRect(&rect);
+	int width = rect.Width();
+	int height = rect.Height();
+	CDC memDC;
+	memDC.CreateCompatibleDC(nullptr);
+	CBitmap bitmap;
+	bitmap.CreateCompatibleBitmap(&memDC, width, height);
+	CBitmap* pOldBitmap = memDC.SelectObject(&bitmap);
+	imageFront.StretchBlt(memDC, 0, 0, width, height, 0, 0, imageFront.GetWidth(), imageFront.GetHeight(), SRCCOPY);
+	memDC.SelectObject(pOldBitmap);
+	pCardFront->SetBitmap((HBITMAP)bitmap);
+
+	pCardBack->GetClientRect(&rect);
+	width = rect.Width();
+	height = rect.Height();
+	memDC.CreateCompatibleDC(nullptr);
+	bitmap.CreateCompatibleBitmap(&memDC, width, height);
+	pOldBitmap = memDC.SelectObject(&bitmap);
+	imageBack.StretchBlt(memDC, 0, 0, width, height, 0, 0, imageBack.GetWidth(), imageBack.GetHeight(), SRCCOPY);
+	memDC.SelectObject(pOldBitmap);
+	pCardBack->SetBitmap((HBITMAP)bitmap);
+
+
+}

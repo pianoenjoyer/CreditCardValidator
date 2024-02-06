@@ -7,7 +7,6 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_CREDITCARDGENERATOR_DIALOG  102
 #define IDR_MAINFRAME                   128
-#define IDC_COMBO1                      1000
 #define IDC_COMBO_BRAND                 1000
 #define IDC_EDIT_NUMBER1                1001
 #define IDC_EDIT_NUMBER2                1002
@@ -18,8 +17,9 @@
 #define IDC_EDIT_CVC                    1008
 #define IDC_PIC_FRONT                   1009
 #define IDC_PIC_BACK                    1010
-#define IDC_BUTTON1                     1011
+#define IDC_BUTTON_GENERATE             1011
 #define IDC_BUTTON2                     1012
+#define IDC_BUTTON_ISVALID              1012
 
 // Next default values for new objects
 // 
