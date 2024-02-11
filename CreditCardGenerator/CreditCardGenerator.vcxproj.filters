@@ -59,5 +59,14 @@
     <Image Include="res\CreditCardGenerator.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\GenericCard.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\GenericCard.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

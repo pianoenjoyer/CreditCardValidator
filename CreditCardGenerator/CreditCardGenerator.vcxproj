@@ -207,7 +207,10 @@
     <None Include="res\CreditCardGenerator.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\CreditCardGenerator.ico" />
+    <Image Include="res\GenericCard.bmp" />
+    <Image Include="res\GenericCard.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
